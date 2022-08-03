@@ -61,7 +61,7 @@ def get_dummies(college_data):
     college_data = pd.concat([college_data, position], axis=1)
     college_data = pd.concat([college_data, school], axis=1)
 
-    college_data = college_data.sample(frac=1).reset_index(drop=True)
+    #college_data = college_data.sample(frac=1).reset_index(drop=True)
     
     return college_data
 
@@ -82,6 +82,12 @@ def run_model(data):
 
     pred = mlp.predict(X_test)
 
+    print(X_test)
+
+    # for xtest, pred in zip(X_test, predictions):
+    #     if pred != X_test:
+    #     print(input, 'has been classified as ', pred, 'and should be ', X_test)
+
     cm = confusion_matrix(y_test, pred, labels=mlp.classes_)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=mlp.classes_)
     disp.plot()
@@ -92,5 +98,5 @@ run_model(model_data)
 def run_engine(player_data, draft_data):
     dummy_data = clean_data(player_data, draft_data)
     model_data = get_dummies(dummy_data)
-    
+
 
