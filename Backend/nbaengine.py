@@ -11,6 +11,8 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from imblearn.over_sampling import RandomOverSampler
+from sklearn.linear_model import LogisticRegression
+from imblearn.over_sampling import RandomOverSampler
 
 player = 'college_player-2021.csv'
 draft = 'draft-2021.csv'
@@ -62,41 +64,46 @@ def get_dummies(college_data):
     college_data = pd.concat([college_data, school], axis=1)
 
     #college_data = college_data.sample(frac=1).reset_index(drop=True)
+
+
     
     return college_data
 
-dummy_data = clean_data(player, draft)
-model_data = get_dummies(dummy_data)
-
 def run_model(data):
-    X = data.drop('Drafted', axis=1) 
+    X = np.array(data.drop('Drafted', axis=1))
     Y = data['Drafted'] 
 
-    oversample = RandomOverSampler(sampling_strategy='minority')
-    X_over, Y_over = oversample.fit_resample(X, Y)
+    #oversample = RandomOverSampler(sampling_strategy='minority')
+    #X_over, Y_over = oversample.fit_resample(X, Y)
 
-    X_train, X_test, y_train, y_test = train_test_split(X_over, Y_over, test_size=0.3)
+    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3)
 
-    mlp = MLPClassifier(hidden_layer_sizes=(4,3), activation='relu', max_iter=400)
-    mlp.fit(X_train,y_train)
+    # mlp = MLPClassifier(hidden_layer_sizes=(4,3), activation='relu', max_iter=400)
+    # mlp.fit(X_train,y_train)
+    # pred = mlp.predict(X_test)
+    # print(X_test)
 
-    pred = mlp.predict(X_test)
-
-    print(X_test)
-
-    # for xtest, pred in zip(X_test, predictions):
-    #     if pred != X_test:
-    #     print(input, 'has been classified as ', pred, 'and should be ', X_test)
-
-    cm = confusion_matrix(y_test, pred, labels=mlp.classes_)
-    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=mlp.classes_)
-    disp.plot()
-    plt.show()
-
-run_model(model_data)
+    # cm = confusion_matrix(y_test, pred, labels=mlp.classes_)
+    # disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=mlp.classes_)
+    # disp.plot()
+    # plt.show()
+    log_reg = LogisticRegression(random_state = 10, max_iter = 100000)
+    log_reg.fit(X_train, y_train)
+    log_reg.predict(X_train)
+    y_pred = log_reg.predict(X_train)
+    pred_proba = log_reg.predict_proba(X_train)
+    pred = list()
+    for preds in pred_proba:
+        pred.append(preds[1])
+    
+    return pred
+    
 
 def run_engine(player_data, draft_data):
     dummy_data = clean_data(player_data, draft_data)
     model_data = get_dummies(dummy_data)
+    return run_model(model_data)
+     
+print(run_engine(player, draft))
 
 

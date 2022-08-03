@@ -26,16 +26,27 @@ if button:
     if len(player_name) == 0:
         st.error("Please enter a valid input")
     else:
-        st.success("We predict {} {} get drafted in NBA {} Draft".format(player_name, decision, selected_year))
-        st.caption("Our model works at an accuracy rate of 92%")
-    
-        st.header("{}'s Player Stats for the {}-{} Season".format(player_name, selected_year-1, selected_year))
 
         player = 'college_player-' + str(selected_year)  + '.csv'
         draft = 'draft-' + str(selected_year) + '.csv'
         player_data = nb.clean_data(player, draft)
+        prob = nb.run_engine(player, draft)
+        print(prob)
+        player_data['Draft Probability'] = prob
+
         player_data = player_data.drop('Drafted', axis=1)
         player_data = player_data[player_data.index.str.startswith(player_name)]
+        player_prob = player_data[-1]
+        player_data = player_data.drop('Draft Probability', axis=1)
+
+        
+
+        st.success("We predict {} {} get drafted in NBA {} Draft".format(player_name, decision, selected_year))
+        st.caption("Our model works at an accuracy rate of {}%".format(round(player_prob)*100, 2))
+    
+        st.header("{}'s Player Stats for the {}-{} Season".format(player_name, selected_year-1, selected_year))
+
+        
 
         st.dataframe(player_data)
 
