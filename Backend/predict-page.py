@@ -20,8 +20,6 @@ with st.form(key = 'form1'):
         selected_year = st.slider("Year",2008,2021,2021)
         button = st.form_submit_button(label = 'Calculate')
 
-decision = bool
-
 if button:
     if len(player_name) == 0:
         st.error("Please enter a valid input")
@@ -30,23 +28,26 @@ if button:
         player = 'college_player-' + str(selected_year)  + '.csv'
         draft = 'draft-' + str(selected_year) + '.csv'
         player_data = nb.clean_data(player, draft)
-        prob = nb.run_engine(player, draft)
-        print(prob)
+        use_data = nb.get_dummies(player_data)
+        model = nb.run_engine(player, draft)
+        prob = nb.get_pred(model, use_data)
+        accuracy = nb.get_accuracy(model, use_data)
         player_data['Draft Probability'] = prob
 
         player_data = player_data.drop('Drafted', axis=1)
         player_data = player_data[player_data.index.str.startswith(player_name)]
-        player_prob = player_data[-1]
-        player_data = player_data.drop('Draft Probability', axis=1)
 
-        
+        if len(player_data)>1:
+            st.success("There were multiple {}s in the {} season. Their stats and draft probability are below:".format(player_name, selected_year))
+        else:
+            player_prob = float(player_data['Draft Probability'])
+            player_data = player_data.drop('Draft Probability', axis=1)
 
-        st.success("We predict {} {} get drafted in NBA {} Draft".format(player_name, decision, selected_year))
-        st.caption("Our model works at an accuracy rate of {}%".format(round(player_prob)*100, 2))
+            st.success("We predict {} has a {}% get drafted in NBA {} Draft".format(player_name, round(player_prob*100, 2), selected_year))
+            
+        st.caption("Our model works at an accuracy rate of {}%".format(round(accuracy)*100, 2))
     
-        st.header("{}'s Player Stats for the {}-{} Season".format(player_name, selected_year-1, selected_year))
-
-        
+        st.header("{}'s {}-{} Season Stats".format(player_name, selected_year-1, selected_year)) 
 
         st.dataframe(player_data)
 

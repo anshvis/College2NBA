@@ -1,4 +1,4 @@
-Conference,Player,Class,Pos,School,G,MP,TRB,AST,STL,BLK,TOV,PF,PTS,FG%,2P%,3P%,FT%,PTS,TRB,AST,STL,BLK,PER,WS,BPM
+Conference,Player,Class,Pos,School,G,MP,TRB,AST,STL,BLK,TOV,PF,PTS,FG%,2P%,3P%,FT%,PPG,RPG,APG,SPG,BPG,PER,WS,BPM
 Big-12,Ochai Agbaji,JR,G,Kansas,30,1010,110,56,33,14,41,55,423,0.42,0.483,0.377,0.689,14.1,3.7,1.9,1.1,0.5,17,3.7,6.7
 Big-12,Chibuzo Agbo,FR,G,Texas Tech,22,140,16,5,1,2,1,10,45,0.41,0.571,0.32,0.556,2,0.7,0.2,0,0.1,14.4,0.5,3.3
 Big-12,Avery Anderson,SO,G,Oklahoma State,27,821,109,54,40,8,70,84,329,0.475,0.522,0.328,0.839,12.2,4,2,1.5,0.3,15.1,2.5,4.1

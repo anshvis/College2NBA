@@ -64,12 +64,10 @@ def get_dummies(college_data):
     college_data = pd.concat([college_data, school], axis=1)
 
     #college_data = college_data.sample(frac=1).reset_index(drop=True)
-
-
     
     return college_data
 
-def run_model(data):
+def get_model(data):
     X = np.array(data.drop('Drafted', axis=1))
     Y = data['Drafted'] 
 
@@ -89,21 +87,33 @@ def run_model(data):
     # plt.show()
     log_reg = LogisticRegression(random_state = 10, max_iter = 100000)
     log_reg.fit(X_train, y_train)
-    log_reg.predict(X_train)
-    y_pred = log_reg.predict(X_train)
-    pred_proba = log_reg.predict_proba(X_train)
+
+    return log_reg
+
+def get_pred(log_reg: LogisticRegression, data):
+    X = np.array(data.drop('Drafted', axis=1))
+    Y = data['Drafted'] 
+    # y_pred = log_reg.predict(X_train)
+    # print(y_pred)
+    pred_proba = log_reg.predict_proba(X)
     pred = list()
     for preds in pred_proba:
         pred.append(preds[1])
-    
     return pred
+
+def get_accuracy(log_reg, data):
+    X = np.array(data.drop('Drafted', axis=1))
+    Y = data['Drafted'] 
+    return log_reg.score(X, Y)
     
 
 def run_engine(player_data, draft_data):
     dummy_data = clean_data(player_data, draft_data)
     model_data = get_dummies(dummy_data)
-    return run_model(model_data)
+    return get_model(model_data)
+    # print(get_accuracy(log_reg))
+    # print(get_pred(log_reg))
      
-print(run_engine(player, draft))
+run_engine(player, draft)
 
 
